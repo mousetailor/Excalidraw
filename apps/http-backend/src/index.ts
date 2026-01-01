@@ -20,6 +20,9 @@ app.post("/signup", async (req, res) => {
     const user = await prismaClient.user.create({
       data: {
         email: parsedData.data?.username,
+
+        
+        // hash the password using bcypt
         password: parsedData.data.password,
         name: parsedData.data.name,
       }
@@ -47,6 +50,8 @@ app.post("/signin", async (req, res) => {
   const user = await prismaClient.user.findUnique({
     where: {
       email: parsedData.data.username,
+      
+      // hash the password using bcypt
       password: parsedData.data.password,
     }
   })
@@ -89,6 +94,22 @@ app.post("/room", middleware, async (req, res) => {
       message: "Room with this name already exists",
     })
   }
+})
+
+app.get("/chats/:roomId", middleware, async (req, res) => {
+  const roomId = Number(req.params.roomId);
+  const messages = await prismaClient.chat.findMany({
+    where: {
+      roomId: roomId
+    },
+    orderBy: {
+      id: 'desc'
+    },
+    take : 50,
+  });
+  res.json({
+    messages,
+  })
 })
 
 app.listen(3001);

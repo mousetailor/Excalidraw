@@ -8,6 +8,7 @@ export function RoomCanvas({roomId}: {roomId: string}) {
   const [socket, setSocket] = useState<WebSocket | null>(null);
 
   useEffect(() => {
+    // token should be replaced with actual auth token but our ORM is having seizure , so we leave it 
     const ws = new WebSocket(`${WS_BACKEND}?token={}`);
 
     ws.onopen = () => {
